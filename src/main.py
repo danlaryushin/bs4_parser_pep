@@ -117,7 +117,7 @@ def pep(session):
     status_list = []
     total_pep = 0
 
-    for tr_tag in tr_tags[:20]:
+    for tr_tag in tr_tags:
 
         # Собираем информацию из таблицы
         a_tag = find_tag(tr_tag, 'a')
