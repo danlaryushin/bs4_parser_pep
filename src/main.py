@@ -21,7 +21,9 @@ def whats_new(session):
     soup = BeautifulSoup(response.text, features='lxml')
     main_div = find_tag(soup, 'section', attrs={'id': 'what-s-new-in-python'})
     div_with_ul = find_tag(main_div, 'div', attrs={'class': 'toctree-wrapper'})
-    sections_by_python = div_with_ul.find_all('li', attrs={'class': 'toctree-l1'})
+    sections_by_python = div_with_ul.find_all(
+        'li', attrs={'class': 'toctree-l1'}
+        )
     results = [('Ссылка на статью', 'Заголовок', 'Редактор, Автор')]
 
     for section in tqdm(sections_by_python):
@@ -41,13 +43,14 @@ def whats_new(session):
 
     return results
 
+
 def latest_versions(session):
     response = get_response(session, MAIN_DOC_URL)
     if response is None:
         return
     soup = BeautifulSoup(response.text, 'lxml')
     sidebar = find_tag(soup, 'div', {'class': 'sphinxsidebarwrapper'})
-    ul_tags = sidebar.find_all('ul') 
+    ul_tags = sidebar.find_all('ul')
 
     for ul in ul_tags:
         if 'All versions' in ul.text:
@@ -61,7 +64,7 @@ def latest_versions(session):
     for a_tag in a_tags:
         link = a_tag['href']
         text_match = re.search(pattern, a_tag.text)
-        if text_match != None:
+        if text_match is not None:
             version = text_match.group(1)
             status = text_match.group(2)
         else:
@@ -72,6 +75,7 @@ def latest_versions(session):
 
     return results
 
+
 def download(session):
     downloads_url = urljoin(MAIN_DOC_URL, 'download.html')
     response = get_response(session, downloads_url)
@@ -79,11 +83,13 @@ def download(session):
         return
     soup = BeautifulSoup(response.text, 'lxml')
     main_tag = find_tag(soup, 'div', {'role': 'main'})
-    table_tag = find_tag(main_tag, 'table', {'class': 'docutils'}) 
-    pdf_a4_tag = find_tag(table_tag, 'a', {'href': re.compile(r'.+pdf-a4\.zip$')})
+    table_tag = find_tag(main_tag, 'table', {'class': 'docutils'})
+    pdf_a4_tag = find_tag(
+        table_tag, 'a', {'href': re.compile(r'.+pdf-a4\.zip$')}
+        )
     pdf_a4_link = pdf_a4_tag['href']
     archive_url = urljoin(downloads_url, pdf_a4_link)
-    filename = archive_url.split('/')[-1] 
+    filename = archive_url.split('/')[-1]
     downloads_dir = BASE_DIR / 'downloads'
     downloads_dir.mkdir(exist_ok=True)
     archive_path = downloads_dir / filename
@@ -95,27 +101,29 @@ def download(session):
         file.write(response.content)
         logging.info(f'Файл загружен. Путь: {archive_path}')
 
+
 def pep(session):
     response = get_response(session, PEP_URL)
     if response is None:
         return
     soup = BeautifulSoup(response.text, 'lxml')
     pep_content = find_tag(soup, 'section', attrs={'id': 'pep-content'})
-    numerical_index = find_tag(pep_content, 'section', {'id': 'numerical-index'})
+    numerical_index = find_tag(
+        pep_content, 'section', {'id': 'numerical-index'}
+        )
     tbody = find_tag(numerical_index, 'tbody')
     tr_tags = tbody.find_all('tr')
     results = [('Статус', 'Количество')]
     status_list = []
     total_pep = 0
 
-    for tr_tag in tr_tags:
-        
+    for tr_tag in tr_tags[:20]:
+
         # Собираем информацию из таблицы
         a_tag = find_tag(tr_tag, 'a')
         abbr_tag = find_tag(tr_tag, 'abbr')
         table_status = abbr_tag.text[1:]
         pep_link = a_tag['href']
-        pep_title = a_tag['title']
         full_link = urljoin(PEP_URL, pep_link)
 
         # Собираем информацию со страницы конкретного PEP
@@ -124,29 +132,30 @@ def pep(session):
             continue
         soup = BeautifulSoup(response.text, 'lxml')
         pep_content = find_tag(soup, 'section', attrs={'id': 'pep-content'})
-        dl_tag = find_tag(pep_content, 'dl', {'class', 'rfc2822 field-list simple'})
+        dl_tag = find_tag(
+            pep_content, 'dl', {'class', 'rfc2822 field-list simple'}
+            )
         dtdd_tags = dl_tag.find_all()
         search_dt = False
         search_dd = False
         for tag in dtdd_tags:
             page_status = None
-            if search_dd == True:
+            if search_dd is True:
                 page_status = tag.text
                 status_list.append(page_status)
                 total_pep += 1
                 if page_status not in EXPECTED_STATUS[table_status]:
                     error_msg = (f'Несовпадающие статусы:\n'
-                                f'{full_link}\n'
-                                f'Статус в карточке: {page_status}\n'
-                                f'Ожидаемые статусы: '
-                                f'{EXPECTED_STATUS[table_status]}')
+                                 f'{full_link}\n'
+                                 f'Статус в карточке: {page_status}\n'
+                                 f'Ожидаемые статусы: '
+                                 f'{EXPECTED_STATUS[table_status]}')
                     logging.warning(error_msg)
                 break
             else:
-                if search_dt == True:
+                if search_dt is True:
                     search_dd = True
-            str_tag = str(tag)
-            if str_tag == '<dt class="field-even">Status<span class="colon">:</span></dt>':
+            if tag.text == 'Status:':
                 search_dt = True
             else:
                 continue
@@ -161,14 +170,13 @@ def pep(session):
     return results
 
 
-
-
 MODE_TO_FUNCTION = {
     'whats-new': whats_new,
     'latest-versions': latest_versions,
     'download': download,
     'pep': pep
 }
+
 
 def main():
     configure_logging()
@@ -184,6 +192,7 @@ def main():
     if results is not None:
         control_output(results, args)
         logging.info('Парсер завершил работу.')
+
 
 if __name__ == '__main__':
     main()
