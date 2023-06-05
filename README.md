@@ -8,10 +8,10 @@
 ## Описание проекта
 
 Парсер имеет 4 режима работы:
-- Whats New: 
-- Latest Version: 
-- Download:
-- PEP:
+- Whats New
+- Latest Version
+- Download
+- PEP
 
 ## Перечень технологий
 - Python
@@ -70,4 +70,8 @@ python main.py latest-versions -o pretty
 ```
 python main.py whats-new
 ```
+
+## Автор
+
+[Даниил Ларюшин](https://github.com/danlaryushin)
 
