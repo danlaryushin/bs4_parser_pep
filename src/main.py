@@ -15,6 +15,7 @@ from utils import find_tag, get_response
 
 def whats_new(session):
     whats_new_url = urljoin(MAIN_DOC_URL, 'whatsnew/')
+    results = [('Ссылка на статью', 'Заголовок', 'Редактор, Автор')]
     response = get_response(session, whats_new_url)
     if response is None:
         return
@@ -24,7 +25,6 @@ def whats_new(session):
     sections_by_python = div_with_ul.find_all(
         'li', attrs={'class': 'toctree-l1'}
         )
-    results = [('Ссылка на статью', 'Заголовок', 'Редактор, Автор')]
 
     for section in tqdm(sections_by_python):
         version_a_tag = find_tag(section, 'a')
@@ -45,6 +45,7 @@ def whats_new(session):
 
 
 def latest_versions(session):
+    results = [('Ссылка на документацию', 'Версия', 'Статус')]
     response = get_response(session, MAIN_DOC_URL)
     if response is None:
         return
@@ -58,7 +59,6 @@ def latest_versions(session):
             break
         else:
             raise Exception('Ничего не нашлось')
-    results = [('Ссылка на документацию', 'Версия', 'Статус')]
     pattern = r'Python (?P<version>\d\.\d+) \((?P<status>.*)\)'
 
     for a_tag in a_tags:
@@ -90,7 +90,8 @@ def download(session):
     pdf_a4_link = pdf_a4_tag['href']
     archive_url = urljoin(downloads_url, pdf_a4_link)
     filename = archive_url.split('/')[-1]
-    downloads_dir = BASE_DIR / 'downloads'
+    downloads = 'downloads'
+    downloads_dir = BASE_DIR / downloads
     downloads_dir.mkdir(exist_ok=True)
     archive_path = downloads_dir / filename
     response = get_response(session, archive_url)
@@ -103,6 +104,7 @@ def download(session):
 
 
 def pep(session):
+    results = [('Статус', 'Количество')]
     response = get_response(session, PEP_URL)
     if response is None:
         return
@@ -113,11 +115,10 @@ def pep(session):
         )
     tbody = find_tag(numerical_index, 'tbody')
     tr_tags = tbody.find_all('tr')
-    results = [('Статус', 'Количество')]
     status_list = []
     total_pep = 0
 
-    for tr_tag in tr_tags:
+    for tr_tag in tr_tags[:20]:
 
         # Собираем информацию из таблицы
         a_tag = find_tag(tr_tag, 'a')
