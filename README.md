@@ -1,6 +1,6 @@
-[![Python](https://img.shields.io/badge/-Python-464646?style=flat&logo=Python&logoColor=ffffff&color=043A6B)](https://www.python.org/)
-[![BeautifulSoup4](https://img.shields.io/badge/-BeautifulSoup4-464646?style=flat&logo=BeautifulSoup4&logoColor=ffffff&color=043A6B)](https://www.crummy.com/software/BeautifulSoup/)
-[![Prettytable](https://img.shields.io/badge/-Prettytable-464646?style=flat&logo=Prettytable&logoColor=ffffff&color=043A6B)](https://github.com/jazzband/prettytable)
+![python](https://img.shields.io/badge/python-222324?style=for-the-badge&logo=python&logoColor=yellow)
+![beautifulsoup4](https://img.shields.io/badge/beautifulsoup4-222324?style=for-the-badge&logo=jekyll&logoColor=)
+[![Prettytable](https://img.shields.io/badge/-Prettytable-222324?style=for-the-badge&logo=Prettytable&logoColor=ffffff&color=043A6B)](https://github.com/jazzband/prettytable)
 [![Logging](https://img.shields.io/badge/-Logging-464646?style=flat&logo=Logging&logoColor=ffffff&color=043A6B)](https://docs.python.org/3/library/logging.html)
 
 # Проект парсинга PEP
