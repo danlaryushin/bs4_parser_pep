@@ -1,7 +1,7 @@
 ![python](https://img.shields.io/badge/python-222324?style=for-the-badge&logo=python&logoColor=yellow)
 ![beautifulsoup4](https://img.shields.io/badge/beautifulsoup4-222324?style=for-the-badge&logo=jekyll&logoColor=)
-[![Prettytable](https://img.shields.io/badge/-Prettytable-222324?style=for-the-badge)
-[![Logging](https://img.shields.io/badge/-Logging-222324?style=for-the-badge)
+![Prettytable](https://img.shields.io/badge/-Prettytable-222324?style=for-the-badge)
+![Logging](https://img.shields.io/badge/-Logging-222324?style=for-the-badge)
 
 # Проект парсинга PEP
 
